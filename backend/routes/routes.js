@@ -7,14 +7,14 @@ const Login = require('../models/login');
 
 router.post("/contact", async (req, res) => {
 
-    const { name, phone, desc } = req.body;
+    const { name, email, desc } = req.body;
 
-    if (!name || !phone || !desc) {
+    if (!name || !email || !desc) {
         return res.status(422).json({ error: "please fill all the fields" });
     } else {
 
         try {
-            const contacts = new Contact({ name, phone, desc });
+            const contacts = new Contact({ name, email, desc });
             const saved = await contacts.save();
 
             if (saved) {
