@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 const Contact = require('../models/contact');
 const User = require('../models/user');
-const Login = require('../models/login');
+const bcrypt = require('bcryptjs');
 
 
 router.post("/contact", async (req, res) => {
+    let success = false
 
     const { name, email, desc } = req.body;
 
     if (!name || !email || !desc) {
-        return res.status(422).json({ error: "please fill all the fields" });
+        return res.status(400).json({ success, error: "please fill all the fields" });
     } else {
 
         try {
@@ -18,13 +19,15 @@ router.post("/contact", async (req, res) => {
             const saved = await contacts.save();
 
             if (saved) {
-                return res.status(201).json({ message: "message submitted successfully" });
+                success = true
+                return res.status(201).json({ success, message: "message submitted successfully" });
             } else {
-                return res.status(500).json({ error: "error occurs" });
+                success = false
+                return res.status(404).json({ success, error: "error occurs" });
             }
         } catch (error) {
             console.log("error", error);
-            return res.status(500).json({ error: "Internal server error" });
+            return res.status(500).json({ success, error: "Internal server error" });
         }
 
     }
@@ -33,55 +36,68 @@ router.post("/contact", async (req, res) => {
 
 
 router.post("/user", async (req, res) => {
+    let success = false
     const { name, email, phone, password } = req.body;
 
     if (!name || !email || !phone || !password) {
-        return res.status(404).json({ error: "please fill all the fields properly" });
+        return res.status(400).json({ success, error: "please fill all the fields properly" });
     } else {
         try {
             const userexist = await User.findOne({ email: email, password: password });
             if (userexist) {
-                return res.status(404).json({ message: "User already exists with same email or password" });
+                return res.status(401).json({ success, message: "User already exists with same email or password" });
             } else {
                 const user = new User({ name, email, phone, password });
                 const saved = await user.save();
 
                 if (saved) {
-                    return res.status(201).json({ message: "User registered successfully" });
+                    success = true
+                    return res.status(201).json({ success, message: "User registered successfully" });
                 } else {
-                    return res.status(500).json({ error: "User registration failed" });
+                    success = false
+                    return res.status(404).json({ success, error: "User registration failed" });
                 }
             }
         } catch (error) {
             console.log("error", error);
-            return res.status(500).json({ error: "Internal server error" });
+            return res.status(500).json({ success, error: "Internal server error" });
         }
     }
 })
 
 
 router.post("/login", async (req, res) => {
+    let success = false
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(404).json({ error: "please fill all the fields properly" });
+        return res.status(400).json({ success, error: "please fill all the fields properly" });
     } else {
-        const userexist = await User.findOne({ email: email, password: password });
+        const userexist = await User.findOne({ email: email });
         if (!userexist) {
-            return res.status(404).json({ error: "Registration required" });
+            return res.status(401).json({ success, error: "Registration required" });
         } else {
-            try {
-                const user = new Login({ email, password });
-                const saved = await user.save();
 
-                if (saved) {
-                    return res.status(201).json({ message: "User login successfully" });
+            try {
+                const ismatch = await bcrypt.compare(password, userexist.password);
+
+                if (ismatch) {
+                    const token = await userexist.generateAuthToken();
+
+                    if (token) {
+                        success = true
+                        return res.status(201).json({ success, message: "User login successfully" });
+                    } else {
+                        success = false
+                        return res.status(404).json({ success, error: "User login failed" });
+                    }
                 } else {
-                    return res.status(500).json({ error: "User login failed" });
+                    return res.status(404).json({ success, error: "Invalid credentials" });
                 }
+
             } catch (error) {
                 console.log("error", error);
-                return res.status(500).json({ error: "Internal server error" });
+                return res.status(500).json({ success, error: "Internal server error" });
             }
         }
     }

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { useRouter } from 'next/router';
+import { useNavigate } from "react-router-dom";
 
 
 const Contact = () => {
 
-    const router = useRouter();
+    // const navigate = useNavigate();
 
     const [user, setuser] = useState({
         name: "", email: "", desc: ""
@@ -33,13 +33,13 @@ const Contact = () => {
 
             const res = await response.json();
 
-            if (res) {
+            if (res.success) {
                 window.alert("Message submitted successfully");
                 console.log("Message submitted successfully");
-                router.push('/');
+                // navigate('/');
             } else {
                 window.alert("error occurs");
-                console.error("error occurs");
+                console.error("error occurs:", response.status);
             }
         } catch (error) {
             console.error('Error:', error);
