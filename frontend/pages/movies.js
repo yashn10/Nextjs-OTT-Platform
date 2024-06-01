@@ -67,13 +67,14 @@ const Movies = () => {
                                     <h2 className="text-gray-900 title-font text-lg font-medium">{data.title}</h2>
                                     <p className="mt-1">{data.synopsis.substring(0, 100)}...</p>
                                 </div>
-                                <Link onClick={() => checklogin(data.id)} href={`/movie/${data.id}`}>
-                                    <button style={{
+                                <button
+                                    onClick={() => checklogin(data.id)}
+                                    style={{
                                         "padding": "10px 20px", "width": "100%", "backgroundColor": "antiquewhite", "marginTop": "7%",
-                                    }}>
-                                        Visit Now
-                                    </button>
-                                </Link>
+                                    }}
+                                >
+                                    Visit Now
+                                </button>
                             </div>
                         ))
                     ) : (
