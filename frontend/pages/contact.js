@@ -23,7 +23,7 @@ const Contact = () => {
         const { name, email, desc } = user;
 
         try {
-            const response = await fetch('http://localhost:7000/contact', {
+            const response = await fetch('https://nextjs-ott-platform.onrender.com/contact', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -49,6 +49,7 @@ const Contact = () => {
 
 
     return (
+
         <div className='container-fluid'>
 
             <div className='contact-form'>
@@ -123,6 +124,7 @@ const Contact = () => {
             </div>
 
         </div>
+        
     )
 
 }

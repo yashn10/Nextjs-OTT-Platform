@@ -20,7 +20,7 @@ const signup = () => {
     const submit = async () => {
         const { name, email, phone, password } = user;
 
-        const response = await fetch('http://localhost:7000/user', {
+        const response = await fetch('https://nextjs-ott-platform.onrender.com/user', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
