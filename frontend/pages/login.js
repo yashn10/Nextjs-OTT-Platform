@@ -10,34 +10,40 @@ const login = () => {
     const [user, setuser] = useState({
         email: "", password: ""
     })
+    const [loading, setLoading] = useState(false);
 
     const change = (e) => {
         setuser({ ...user, [e.target.name]: e.target.value });
     }
 
     const submit = async () => {
+        setLoading(true);
         const { email, password } = user;
 
-        const response = await fetch('https://nextjs-ott-platform.onrender.com/login', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email, password
-            })
-        })
+        try {
+            const response = await fetch('https://nextjs-ott-platform.onrender.com/login', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            });
 
-        const res = await response.json();
+            const res = await response.json();
+            setLoading(false);
 
-        if (res.success) {
-            router.push('/');
-            console.log('User login successfully');
-            window.alert('Login successfull');
-            localStorage.setItem('user', res);
-        } else {
-            console.log('login failed due to invalid credentials');
-            window.alert('login failed due to invalid credentials');
+            if (res.success) {
+                localStorage.setItem('user', JSON.stringify(res));
+                window.alert('Login successful');
+                router.push('/');
+            } else {
+                window.alert('Login failed: ' + res.error);
+                console.log('Login failed due to invalid credentials');
+            }
+        } catch (error) {
+            setLoading(false);
+            console.error('Error during login:', error);
+            window.alert('An error occurred during login. Please try again later.');
         }
     }
 
@@ -59,7 +65,7 @@ const login = () => {
                         <label htmlFor="password" className="leading-7 text-sm text-gray-600">Password</label>
                         <input type="password" id="password" name="password" onChange={change} value={user.password} className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
                     </div>
-                    <button className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg" onClick={submit}>Login</button>
+                    <button className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg" onClick={submit} disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
                     <Link href={'/signup'} className='mt-3'>
                         <button className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">
                             Signup

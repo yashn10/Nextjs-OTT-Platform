@@ -5,13 +5,11 @@ require('dotenv').config({ path: './config.env' });
 const routes = require('./routes/routes');
 const port = process.env.PORT
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT");
-    res.header("Access-Control-Allow-Origin' 'http://localhost:7000' always");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-})
+app.use(cors({
+    origin: ['http://localhost:7000', 'https://nextjs-ott-platform.onrender.com'], // Add your domains here
+    methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT'],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
+}));
 
 require('./db/db');
 app.use(express.json());
