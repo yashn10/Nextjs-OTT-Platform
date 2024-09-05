@@ -6,7 +6,7 @@ const routes = require('./routes/routes');
 const port = process.env.PORT
 
 app.use(cors({
-    origin: ['http://localhost:7000', 'https://nextjs-ott-platform.vercel.app'],
+    origin: ['http://localhost:3000', 'https://nextjs-ott-platform.vercel.app'],
     methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 }));
