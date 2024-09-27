@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
+const apikey = process.env.NEXT_PUBLIC_API_KEY
+const apihost = process.env.NEXT_PUBLIC_API_HOST
 
 
 const Movies = () => {
@@ -12,12 +14,12 @@ const Movies = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = 'https://netflix54.p.rapidapi.com/search/?query=stranger&offset=0&limit_titles=50&limit_suggestions=20&lang=en';
+            const url = 'https://movies-api14.p.rapidapi.com/shows';
             const options = {
                 method: 'GET',
                 headers: {
-                    'X-RapidAPI-Key': '64f91a2064msh4747489567f1dacp1680b2jsn11cb6487baaa',
-                    'X-RapidAPI-Host': 'netflix54.p.rapidapi.com'
+                    'x-rapidapi-key': apikey,
+                    'x-rapidapi-host': apihost
                 }
             };
 
@@ -25,9 +27,7 @@ const Movies = () => {
                 const response = await fetch(url, options);
                 const result = await response.json();
                 console.log(result);
-                const titlesWithJawSummary = result.titles.map(title => title.jawSummary);
-                const data = titlesWithJawSummary || [];
-                setMainData(data);
+                setMainData(result.movies);
                 setLoading(false);
             } catch (error) {
                 console.error(error);
@@ -39,11 +39,19 @@ const Movies = () => {
     }, []);
 
 
-    const checklogin = (id) => {
+    const checklogin = (data) => {
         const user = localStorage.getItem('user');
 
         if (user) {
-            router.push(`movie/${id}`);
+            router.push({
+                pathname: `movie/${data._id}`,
+                query: {
+                    id: data._id,
+                    title: data.title,
+                    image: data.poster_path,
+                    desc: data.overview
+                }
+            });
         } else {
             console.log("login required");
             window.alert("login required");
@@ -66,21 +74,21 @@ const Movies = () => {
                     <div className="flex flex-wrap -m-4">
                         {maindata.length > 0 ? (
                             maindata.map((data) => (
-                                <div key={data.id} className="lg:w-1/4 md:w-1/2 p-4 w-full">
+                                <div key={data._id} className="lg:w-1/4 md:w-1/2 p-4 w-full">
                                     <div className="relative h-60 rounded-lg overflow-hidden bg-gray-200 hover:bg-gray-300 transition-colors duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-2xl">
                                         <a className="block relative w-full h-full">
                                             <img
                                                 alt={data.title}
                                                 className="object-cover object-center w-full h-full block transition-transform duration-500 ease-in-out"
-                                                src={data.backgroundImage.url}
+                                                src={data.poster_path}
                                             />
                                         </a>
                                         <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out">
                                             <h3 className="text-gray-300 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
                                             <h2 className="text-white title-font text-lg font-medium mb-2">{data.title}</h2>
-                                            <p className="text-gray-300 mb-4">{data.synopsis.substring(0, 100)}...</p>
+                                            <p className="text-gray-300 mb-4">{data.overview.substring(0, 100)}...</p>
                                             <button
-                                                onClick={() => checklogin(data.id)}
+                                                onClick={() => checklogin(data)}
                                                 className="py-2 px-4 w-full bg-white text-gray-800 font-semibold rounded shadow-md hover:bg-gray-100 transition-colors duration-300 ease-in-out"
                                             >
                                                 Visit Now
