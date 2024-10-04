@@ -62,7 +62,7 @@ const Movies = () => {
 
     useEffect(() => {
         const filteredMovies = searchQuery ?
-            maindata.filter((movie) => movie.title.toLowerCase() === searchQuery.toLowerCase()) : maindata;
+            maindata.filter((movie) => movie.title.toLowerCase().includes(searchQuery.toLowerCase())) : maindata;
 
         setfilteredmovies(filteredMovies);
     }, [searchQuery, maindata])
