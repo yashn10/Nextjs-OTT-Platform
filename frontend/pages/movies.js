@@ -75,8 +75,8 @@ const Movies = () => {
             <div className="container px-5 py-12 mx-auto">
                 <div className="flex" style={{ "justify-content": "space-between" }}>
                     <h1 className="text-3xl font-semibold italic mb-6 text-white">Series & Movies</h1>
-                    {/* Search Bar */}
-                    <div className="mb-6">
+                    {/* Updated Search Bar */}
+                    <div className="relative w-1/4">
                         <input
                             type="text"
                             placeholder="Search for a movie..."
@@ -84,6 +84,19 @@ const Movies = () => {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
+                        {/* Search Icon */}
+                        <div className="absolute left-3 top-2">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M8 11a4 4 0 108 0 4 4 0 00-8 0zm13 11l-4.35-4.35" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
                 <hr className="mb-6 border-gray-300" />
