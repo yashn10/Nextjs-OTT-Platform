@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
-import { data } from 'autoprefixer';
 
 
 const id = () => {
