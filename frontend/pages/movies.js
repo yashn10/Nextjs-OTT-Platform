@@ -80,7 +80,7 @@ const Movies = () => {
                         <input
                             type="text"
                             placeholder="Search for a movie..."
-                            className="w-full p-2 rounded-lg text-black"
+                            className="w-full py-2 pl-10 pr-4 bg-gray-800 text-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-900 transition-all duration-300 ease-in-out"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
