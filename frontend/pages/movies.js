@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Link from "next/link";
 import { useRouter } from 'next/navigation'
 const apikey = process.env.NEXT_PUBLIC_API_KEY
 const apihost = process.env.NEXT_PUBLIC_API_HOST
@@ -10,6 +9,8 @@ const Movies = () => {
     const router = useRouter()
     const [maindata, setMainData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState(''); // State for the search query
+    const [filteredMovies, setfilteredmovies] = useState('');
 
 
     useEffect(() => {
@@ -59,11 +60,32 @@ const Movies = () => {
     }
 
 
+    useEffect(() => {
+        const filteredMovies = searchQuery ?
+            maindata.filter((movie) => movie.title.toLowerCase() === searchQuery.toLowerCase()) : maindata;
+
+        setfilteredmovies(filteredMovies);
+    }, [searchQuery, maindata])
+
+
+
     return (
 
         <section className="text-gray-600 body-font bg-black">
             <div className="container px-5 py-12 mx-auto">
-                <h1 className="text-center text-3xl font-semibold italic mb-6 text-white">Series & Movies</h1>
+                <div className="flex" style={{ "justify-content": "space-between" }}>
+                    <h1 className="text-3xl font-semibold italic mb-6 text-white">Series & Movies</h1>
+                    {/* Search Bar */}
+                    <div className="mb-6">
+                        <input
+                            type="text"
+                            placeholder="Search for a movie..."
+                            className="w-full p-2 rounded-lg text-black"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </div>
                 <hr className="mb-6 border-gray-300" />
 
                 {loading ? (
@@ -72,8 +94,8 @@ const Movies = () => {
                     </div>
                 ) : (
                     <div className="flex flex-wrap -m-4">
-                        {maindata.length > 0 ? (
-                            maindata.map((data) => (
+                        {filteredMovies.length > 0 ? (
+                            filteredMovies.map((data) => (
                                 <div key={data._id} className="lg:w-1/4 md:w-1/2 p-4 w-full">
                                     <div className="relative h-60 rounded-lg overflow-hidden bg-gray-200 hover:bg-gray-300 transition-colors duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-2xl">
                                         <a className="block relative w-full h-full">
@@ -107,5 +129,6 @@ const Movies = () => {
 
     )
 };
+
 
 export default Movies;
