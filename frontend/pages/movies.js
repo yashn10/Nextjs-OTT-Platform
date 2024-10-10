@@ -11,6 +11,13 @@ const Movies = () => {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState(''); // State for the search query
     const [filteredMovies, setfilteredmovies] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const moviesPerPage = 14; // Number of movies per page
+    const indexOfLastMovie = currentPage * moviesPerPage;
+    const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
+    const currentMovies = filteredMovies.slice(indexOfFirstMovie, indexOfLastMovie);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
     useEffect(() => {
@@ -73,7 +80,7 @@ const Movies = () => {
 
         <section className="text-gray-600 body-font bg-black">
             <div className="container px-5 py-12 mx-auto">
-                <div className="flex" style={{ "justify-content": "space-between" }}>
+                <div className="flex" style={{ justifyContent: "space-between" }}>
                     <h1 className="text-3xl font-semibold italic mb-6 text-white">Series & Movies</h1>
                     {/* Updated Search Bar */}
                     <div className="relative w-1/4">
@@ -106,39 +113,73 @@ const Movies = () => {
                         <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
                     </div>
                 ) : (
-                    <div className="flex flex-wrap -m-4">
-                        {filteredMovies.length > 0 ? (
-                            filteredMovies.map((data) => (
-                                <div key={data._id} className="lg:w-1/4 md:w-1/2 p-4 w-full">
-                                    <div className="relative h-60 rounded-lg overflow-hidden bg-gray-200 hover:bg-gray-300 transition-colors duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-2xl">
-                                        <a className="block relative w-full h-full">
-                                            <img
-                                                alt={data.title}
-                                                className="object-cover object-center w-full h-full block transition-transform duration-500 ease-in-out"
-                                                src={data.poster_path}
-                                            />
-                                        </a>
-                                        <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out">
-                                            <h3 className="text-gray-300 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
-                                            <h2 className="text-white title-font text-lg font-medium mb-2">{data.title}</h2>
-                                            <p className="text-gray-300 mb-4">{data.overview.substring(0, 100)}...</p>
-                                            <button
-                                                onClick={() => checklogin(data)}
-                                                className="py-2 px-4 w-full bg-white text-gray-800 font-semibold rounded shadow-md hover:bg-gray-100 transition-colors duration-300 ease-in-out"
-                                            >
-                                                Visit Now
-                                            </button>
+                    <>
+
+                        <div className="flex flex-wrap -m-4">
+                            {filteredMovies.length > 0 ? (
+                                currentMovies.map((data) => (
+
+                                    <div key={data._id} className="lg:w-1/4 md:w-1/2 p-4 w-full">
+                                        <div className="relative h-60 rounded-lg overflow-hidden bg-gray-200 hover:bg-gray-300 transition-colors duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-2xl">
+                                            <a className="block relative w-full h-full">
+                                                <img
+                                                    alt={data.title}
+                                                    className="object-cover object-center w-full h-full block transition-transform duration-500 ease-in-out"
+                                                    src={data.poster_path}
+                                                />
+                                            </a>
+                                            <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                                                <h3 className="text-gray-300 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                                                <h2 className="text-white title-font text-lg font-medium mb-2">{data.title}</h2>
+                                                <p className="text-gray-300 mb-4">{data.overview.substring(0, 100)}...</p>
+                                                <button
+                                                    onClick={() => checklogin(data)}
+                                                    className="py-2 px-4 w-full bg-white text-gray-800 font-semibold rounded shadow-md hover:bg-gray-100 transition-colors duration-300 ease-in-out"
+                                                >
+                                                    Visit Now
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))
-                        ) : (
-                            <p className="text-center w-full">No movies found</p>
-                        )}
-                    </div>
+
+                                ))
+
+                            ) : (
+                                <p className="text-center w-full">No movies found</p>
+                            )}
+                        </div>
+
+                        {/* Pagination Controls */}
+                        <div className="flex justify-center mt-16">
+                            <button
+                                onClick={() => paginate(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="mx-2 px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Previous
+                            </button>
+                            {[...Array(Math.ceil(filteredMovies.length / moviesPerPage)).keys()].map(number => (
+                                <button
+                                    key={number + 1}
+                                    onClick={() => paginate(number + 1)}
+                                    className={`mx-1 px-5 py-1 rounded-lg ${currentPage === number + 1 ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'} hover:bg-blue-700 transition-colors duration-200`}
+                                >
+                                    {number + 1}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => paginate(currentPage + 1)}
+                                disabled={currentPage === Math.ceil(filteredMovies.length / moviesPerPage)}
+                                className="mx-2 px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Next
+                            </button>
+                        </div>
+
+                    </>
                 )}
             </div>
-        </section>
+        </section >
 
     )
 };
