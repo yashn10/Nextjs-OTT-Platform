@@ -1,7 +1,11 @@
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
+
 const header = ({ loggedin, setloggedin }) => {
+
+    const router = useRouter();
 
     const logout = () => {
         if (typeof window !== 'undefined') {
@@ -9,6 +13,7 @@ const header = ({ loggedin, setloggedin }) => {
             setloggedin(false);
             console.log("User logout successfully");
             window.alert("User logout successfully");
+            router.push("/login");
         }
     };
 

@@ -30,7 +30,7 @@ const Contact = () => {
 
             const res = await response.json();
 
-            if (res.success) {
+            if (res) {
                 window.alert("Message submitted successfully");
                 console.log("Message submitted successfully");
                 // navigate('/');

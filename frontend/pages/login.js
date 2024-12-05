@@ -33,11 +33,11 @@ const login = ({ setloggedin }) => {
             const res = await response.json();
             setLoading(false);
 
-            if (res.success) {
+            if (res) {
                 localStorage.setItem('user', JSON.stringify(res));
                 setloggedin(true);
                 window.alert('Login successful');
-                router.push('/');
+                router.push('/movies');
             } else {
                 window.alert('Login failed: ' + res.error);
                 console.log('Login failed due to invalid credentials');
